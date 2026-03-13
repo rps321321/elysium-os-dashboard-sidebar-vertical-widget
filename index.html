@@ -87,69 +87,68 @@ html, body {
 }
 </style>
 <script>
-function navigateTo(e, url) {
+function handleNav(e, url) {
   // Detection for Notion Desktop App
   const isNotionApp = /Notion/i.test(navigator.userAgent);
   
-  if (isNotionApp) {
-    // In the app, standard click might be blocked, but window.open('_blank') 
-    // mimics the "Right click -> Open in new tab" behavior which the user confirmed works.
-    window.open(url, '_blank');
-    e.preventDefault();
-    return false;
+  // If in a browser, try to navigate the same tab
+  if (!isNotionApp) {
+    try {
+      if (window.top && window.top !== window) {
+        window.top.location.href = url;
+        e.preventDefault();
+        return false;
+      }
+    } catch (err) {
+      // Cross-origin browser security: target="_top" will take over
+    }
   }
   
-  // Browser behavior: Try staying in the same tab
-  try {
-    if (window.top && window.top !== window) {
-      window.top.location.href = url;
-      e.preventDefault();
-    }
-  } catch (err) {
-    // If blocked by CSP, target="_top" on the anchor tag will handle it automatically
-  }
+  // In the App: Let the native "target='_blank'" on the anchor tag handle it.
+  // This is the most robust way as it mimics the "Open in new tab" right-click behavior.
+  return true;
 }
 </script>
 </head>
 <body>
 <div class="sidebar-pillar">
-  <!-- JavaScript based navigation with target="_blank" fallback for App support -->
-  <a href="https://www.notion.so/322bca1cc0de80e7af17e7a555384e2e" target="_top" onclick="navigateTo(event, this.href)" class="nav-item">
+  <!-- Use target="_blank" for App compatibility and target="_top" as a hint for same-tab in browsers -->
+  <a href="https://www.notion.so/322bca1cc0de80e7af17e7a555384e2e" target="_blank" onclick="return handleNav(event, this.href)" class="nav-item">
     <div class="icon-box">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
     </div>
     <span class="label">Emails</span>
   </a>
 
-  <a href="https://www.notion.so/322bca1cc0de802e8dcff60d3a80708c" target="_top" onclick="navigateTo(event, this.href)" class="nav-item">
+  <a href="https://www.notion.so/322bca1cc0de802e8dcff60d3a80708c" target="_blank" onclick="return handleNav(event, this.href)" class="nav-item">
     <div class="icon-box">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
     </div>
     <span class="label">Finance</span>
   </a>
 
-  <a href="https://www.notion.so/322bca1cc0de810cbd02f69a2f7dbba8" target="_top" onclick="navigateTo(event, this.href)" class="nav-item">
+  <a href="https://www.notion.so/322bca1cc0de810cbd02f69a2f7dbba8" target="_blank" onclick="return handleNav(event, this.href)" class="nav-item">
     <div class="icon-box">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 7.65l.77.78L12 21l7.65-7.65.77-.78a5.4 5.4 0 0 0 0-7.65z"></path></svg>
     </div>
     <span class="label">Health & Wellness</span>
   </a>
 
-  <a href="https://www.notion.so/322bca1cc0de8193abebda068c5986b3" target="_top" onclick="navigateTo(event, this.href)" class="nav-item">
+  <a href="https://www.notion.so/322bca1cc0de8193abebda068c5986b3" target="_blank" onclick="return handleNav(event, this.href)" class="nav-item">
     <div class="icon-box">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
     </div>
     <span class="label">Goals & Projects</span>
   </a>
 
-  <a href="https://www.notion.so/322bca1cc0de816e92d6fa5247d71521" target="_top" onclick="navigateTo(event, this.href)" class="nav-item">
+  <a href="https://www.notion.so/322bca1cc0de816e92d6fa5247d71521" target="_blank" onclick="return handleNav(event, this.href)" class="nav-item">
     <div class="icon-box">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
     </div>
     <span class="label">Relationship</span>
   </a>
 
-  <a href="https://www.notion.so/322bca1cc0de81b49e54f0a276128660" target="_top" onclick="navigateTo(event, this.href)" class="nav-item">
+  <a href="https://www.notion.so/322bca1cc0de81b49e54f0a276128660" target="_blank" onclick="return handleNav(event, this.href)" class="nav-item">
     <div class="icon-box">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.5-.6 1.5-1.5 0-.4-.1-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-5.5-4.5-10-10-10z"></path></svg>
     </div>
