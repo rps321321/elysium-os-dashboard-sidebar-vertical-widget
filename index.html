@@ -19,10 +19,12 @@ html, body {
   border: none !important;
   box-shadow: none !important;
 }
+canvas.stars { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .sidebar-pillar {
   display: flex;
   flex-direction: column;
-  background: #191919;
+  background: transparent; /* Changed to transparent to see stars */
   width: 100%;
   height: 100%;
   min-height: 100vh;
@@ -30,6 +32,9 @@ html, body {
   padding: 0;
   border: none !important;
   box-shadow: none !important;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.8s ease-out;
 }
 .nav-item {
   display: flex;
@@ -37,7 +42,7 @@ html, body {
   gap: 16px;
   padding: 18px 24px;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
@@ -59,6 +64,7 @@ html, body {
 .nav-item:hover {
   background: rgba(201, 168, 76, 0.05);
   padding-left: 30px;
+  transform: translateY(-2px);
 }
 .nav-item:hover::before {
   height: 60%;
@@ -108,9 +114,31 @@ function handleNav(e, url) {
   // This is the most robust way as it mimics the "Open in new tab" right-click behavior.
   return true;
 }
+
+// Starfield Logic
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+const stars = Array.from({length:100},()=>({
+  x:Math.random(), y:Math.random(), r:Math.random()*0.8+0.2, 
+  o:Math.random(), s:Math.random()*0.02+0.005, dir:Math.random()>0.5?1:-1 
+}));
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    s.o += s.s * s.dir;
+    if(s.o > 0.8 || s.o < 0.1) s.dir *= -1;
+    ctx.beginPath(); ctx.arc(s.x*canvas.width,s.y*canvas.height,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${s.o})`; ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
 </script>
 </head>
 <body>
+<canvas class="stars" id="starfield"></canvas>
 <div class="sidebar-pillar">
   <!-- Use target="_blank" for App compatibility and target="_top" as a hint for same-tab in browsers -->
   <a href="https://www.notion.so/322bca1cc0de802e8dcff60d3a80708c" target="_blank" onclick="return handleNav(event, this.href)" class="nav-item">
